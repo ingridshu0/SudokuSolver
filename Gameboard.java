@@ -3,49 +3,20 @@ package SudokuSolver;
 import java.util.Scanner;
 import java.io.*;
 
+/**
+ * Gameboard class
+ * 
+ * @author ingrid
+ *
+ */
 public class Gameboard {
 	
-	// 
 	private int[][] board = new int[9][9];
 	
 	// Constructor
 	public Gameboard()
 	{
 		Integer[] vals = readCSV();
-		
-		/*
-		// test- print array (vals)
-		String str = "";
-		// counts every third line
-		int counter = 0;
-		for(int i = 0; i < vals.length; i++)
-		{
-			if((i + 1) % 3 == 0)
-			{
-				str += vals[i];
-				if((i + 1) % 9 == 0)
-				{
-					str += "\n";
-					counter++;
-					
-					if(counter % 3 == 0)
-					{
-						str += "\n";
-					}
-				}
-				else
-				{
-					str += "   ";
-				}
-			}
-			else
-			{
-				str += vals[i];
-				str += ", ";
-			}
-		}
-		System.out.println(str);
-		*/
 		
 		// inserts given values
 		int valIndex = 0;
@@ -55,17 +26,34 @@ public class Gameboard {
 			for(int j = 0; j < board[0].length; j++)
 			{
 				board[i][j] = vals[valIndex];
-				//System.out.print(board[i][j]);
 				valIndex++;
 			}
-			//System.out.println("\n");
 			
-		}
-		
-		// prints board (make sure values r there)
-		
+		}		
 	}
 	
+	
+	/**
+	 * Copy constructor
+	 * 
+	 * @param b
+	 */
+	public Gameboard(Gameboard b)
+	{
+		for(int r = 0; r < 9; r++)
+		{
+			for(int c = 0; c < 9; c++)
+			{
+				board[r][c] = b.get(r, c);
+			}
+		}
+	}
+	
+	
+	/**
+	 * Helped method to read CSV file
+	 * @return
+	 */
 	private Integer[] readCSV()
 	{
 		String pathname = "SudokuBoard.csv";
@@ -108,6 +96,7 @@ public class Gameboard {
 	
 	/**
 	 * place numeral n at position (r, c)
+	 * precondition: canPlace()
 	 * 
 	 * @param r
 	 * @param c
@@ -119,8 +108,6 @@ public class Gameboard {
 		{
 			board[r][c] = n;
 		}
-		
-		// what TODO if cannot place?
 	}
 	
 	
@@ -285,7 +272,7 @@ public class Gameboard {
 			tempCol = 0;
 		}
 		
-		else if(c < 6 && c >= 0)
+		else if(c < 6 && c >= 3)
 		{
 			tempCol = 3;
 		}
@@ -334,29 +321,36 @@ public class Gameboard {
 	
 	
 	/**
-	 * finds most constrained spot
+	 * finds most constrained spot (most constrained = least possibilities)
 	 * 
 	 * @return row, col of most constrained spot
 	 * @return -1, -1 if there is no constrained spot (impossible to solve puzzle)
 	 */
 	public int[] getMostConstrained()
-	{
+	{		
 		
 		int rowMC = -1;
 		int colMC = -1;
-		int mostConstrained = -1;
+		// 9 possibilities is the most
+		int mostConstrained = 9;
 		int temp;
 		
 		for(int r = 0; r < board.length; r++)
 		{
 			for(int c = 0; c < board[0].length; c++)
 			{
-				temp = findConstraint(r, c);
-				if(temp > mostConstrained)
+				// blank spot
+				if(board[r][c] == 0)
 				{
-					mostConstrained = temp;
-					rowMC = r;
-					colMC = c;
+					temp = findConstraint(r, c);
+					
+					// less possibilities
+					if(temp < mostConstrained)
+					{
+						mostConstrained = temp;
+						rowMC = r;
+						colMC = c;
+					}
 				}
 			}
 		}
@@ -370,25 +364,23 @@ public class Gameboard {
 	
 	
 	/**
-	 * helped method to find the constraint for a given spot on the board
+	 * helper method to find the constraint for a given spot on the board
 	 * 
 	 * @param row
 	 * @param col
 	 * @return how constrained given row, col is
 	 */
-	private int findConstraint(int row, int col)
+	private int findConstraint(int r, int c)
 	{
 		// how many numbers can be placed at given index
-		int counter = 0; //TODO can u initialize it here?
+		int temp = 0;
 		
-		for(int i = 1; i <= 9; i++)
+		for(int i = 1; i < 10; i++)
 		{
-			if(canPlace(row, col, i))
-			{
-				counter++;
-			}
+			if(canPlace(r, c, i))
+				temp++;
 		}
 		
-		return counter;
+		return temp;
 	}
 }

@@ -2,12 +2,22 @@
 
 package SudokuSolver;
 
+
+/**
+ * Runner / test class for Gameboard
+ * 
+ * @author ingrid
+ */
 public class SudokuRunner {
 	
 	public static void main(String[] args)
 	{
 		// ****************TEST GAMEBOARD**
 		Gameboard board = new Gameboard();
+		
+		// Copy constructor
+		Gameboard newBoard = board;
+		System.out.println(newBoard);
 		
 		System.out.println("TOSTRING()");
 		System.out.println(board.toString());
@@ -36,9 +46,7 @@ public class SudokuRunner {
 		System.out.println(board.canPlace(2, 0, 2));
 		
 		
-		
-		// ***************SUDOKU SOLVER***
-		
+		System.out.println("\n");
 	}
 
 }
