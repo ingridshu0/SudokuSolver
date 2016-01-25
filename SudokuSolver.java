@@ -1,7 +1,7 @@
-package SudokuSolver;
+//package SudokuSolver;
 
 /**
- * SodokuSolver class
+ * SudokuSolver class
  * Run this file to solve Sudoku
  * 
  * @author ingrid
